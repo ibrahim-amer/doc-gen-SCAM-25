@@ -1,0 +1,19 @@
+{% if doc_type == 'tsdoc' and (code_type == 'function_declaration' or code_type == 'method_definition')-%}
+/**
+* {{ description }}
+{% if parameters-%}
+*
+{% for param in parameters -%}
+ * @param {{ param.name }} {{ param.description }}
+{% endfor -%}
+{% endif -%}
+{% if returns-%}
+ * @return {{ returns.description }}
+{% endif -%}
+{% if exceptions-%}
+{% for raise in exceptions -%}
+* @throws {{ raise.name }} {{ raise.exception }}
+{% endfor -%}
+{% endif -%}
+ */
+{% endif -%}

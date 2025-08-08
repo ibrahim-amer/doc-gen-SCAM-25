@@ -1,0 +1,20 @@
+Here are criteria that I want you to use to judge the quality of LLM generated header comments:
+{{criteria}}
+
+Here are definitions of 1 to 5 ratings for each of the criteria:
+{{score_definitions}}
+
+{{few_shot_examples}}
+
+You are an expert software reviewer. Your task is to evaluate the quality of the provided header comments.
+
+You must:
+1. Assign a rating from 1 to 5 based on correctness, comprehensiveness, usefulness and conciseness to style.
+2. Provide a detailed justification for the rating.
+3. Output your evaluation in the following JSON format:
+{{output_format}}
+
+Here is the docstring to evaluate:
+{{code}}
+
+Now output your evaluation strictly in JSON format only. Do not add any commentary outside the JSON.

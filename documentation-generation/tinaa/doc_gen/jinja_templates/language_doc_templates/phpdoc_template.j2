@@ -1,0 +1,26 @@
+{% if doc_type == 'phpdoc' and (code_type == 'method_declaration' or code_type == 'function_definition')-%}
+/**
+* {{ one_line_summary }}
+*
+* {{ description }}
+*
+* @author GenAI generated
+{% if parameters-%}
+*
+{% for param in parameters -%}
+ * @param {{ param.name }} {{ param.description }}
+{% endfor -%}
+{% endif -%}
+{% if returns-%}
+ * @return {{ returns.description }}
+{% endif -%}
+{% if exceptions-%}
+{% for raise in exceptions -%}
+* @throws {{ raise.exception }} {{ raise.description }}
+{% endfor -%}
+{% endif -%}
+{% if api-%}
+* @api
+{% endif -%}
+*/
+{% endif -%}

@@ -1,0 +1,14 @@
+# Check tinaa/doc_gen/confg/LLMProvider.py file for list of supported LLM providers. 
+# You can always extend that list by following the LLMFactory.py structure
+LLM_PROVIDER: openai
+
+GEMINI:
+  KEY: #replace with your api key
+  MODEL: gemini-1.5-flash-latest
+  TEMPERATURE: 0.3
+
+OPENAI:
+  API_KEY: #replace with your api key
+  MODEL: gpt-4o 
+  TEMPERATURE: 0.3
+

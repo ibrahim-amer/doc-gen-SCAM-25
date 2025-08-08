@@ -1,0 +1,30 @@
+{% if doc_type == 'numpydoc' and (code_type == 'function_declaration' or code_type == 'function_definition')-%}
+"""
+{{ description }}
+
+{% if parameters-%}
+Parameters
+----------
+{% for param in parameters -%}
+{{ param.name }}
+    {{ param.description }}
+{% endfor %}
+{% endif -%}
+
+{% if returns -%}
+Returns
+-------
+:
+    {{ returns.description }}
+
+{% endif -%}
+{% if exceptions-%}
+Raises
+------
+{% for raise in raises -%}
+{{ raise.exception }}
+    {{ raise.description }}
+{% endfor %}
+{% endif -%}
+"""
+{% endif -%}

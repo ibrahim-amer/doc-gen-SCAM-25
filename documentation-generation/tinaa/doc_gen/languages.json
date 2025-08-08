@@ -1,0 +1,73 @@
+{
+    "languages": [
+      {
+        "name": "Java",
+        "doc_format" : "javadoc",
+        "extensions": [".java"],
+        "elements_to_document": ["interface_declaration", "constructor_declaration","class_declaration", "method_declaration"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "Python",
+        "doc_format" : "numpydoc",
+        "extensions": [".py"],
+        "elements_to_document": ["function_declaration", "function_definition", "class_definition","class_declaration"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "TypeScript",
+        "doc_format" : "tsdoc",
+        "extensions": [".ts"],
+        "elements_to_document": ["method_definition", "class_declaration", "function_declaration", "interface_declaration"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "C",
+        "doc_format" : "javadoc",
+        "extensions": [".c", ".h"],
+        "elements_to_document": ["function_definition", "function"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "Cpp",
+        "doc_format" : "javadoc",
+        "extensions": [".cpp"],
+        "elements_to_document": ["method_declaration","function_definition", "function"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "Go",
+        "doc_format" : "godoc",
+        "extensions": [".go"],
+        "elements_to_document": ["method_declaration", "type_declaration","function_definition", "function"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "make",
+        "doc_format" : "makedoc",
+        "extensions": ["Makefile"],
+        "elements_to_document": ["rule"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "PHP",
+        "doc_format" : "PHPdoc",
+        "extensions": [".php"],
+        "elements_to_document": ["method_declaration", "class_declaration", "function_definition"],
+        "parser": "treesitter"
+      },
+      {
+        "name": "ART",
+        "doc_format" : "ARTdoc",
+        "extensions": [".ART"],
+        "parser": "arpeggio"
+      },
+      {
+        "name": "Terraform",
+        "doc_format" : "hashcomment",
+        "extensions": [".tf", ".tfvars", ".tfstate", ".tf.json"],
+        "parser": "arpeggio"
+      }
+    ]
+  }
+  

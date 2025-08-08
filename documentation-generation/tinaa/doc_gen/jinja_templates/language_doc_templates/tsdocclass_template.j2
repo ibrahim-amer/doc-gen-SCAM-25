@@ -1,0 +1,5 @@
+{% if doc_type == 'tsdoc' and (code_type == 'class_declaration' or code_type == 'interface_declaration')-%}
+/**
+* {{ description }}
+*/
+{% endif -%}

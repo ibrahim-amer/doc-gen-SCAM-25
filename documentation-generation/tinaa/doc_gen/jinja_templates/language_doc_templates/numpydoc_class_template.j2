@@ -1,0 +1,16 @@
+{% if doc_type == 'numpydoc' and (code_type == 'class_declaration' or code_type == 'class_definition')-%}
+"""
+{{ description }}
+{% if not attributes -%}
+"""
+{% endif -%}
+{% if attributes%}
+Attributes
+----------
+{% for attribute in attributes -%}
+{{ attribute.name }}
+    {{ attribute.description }}
+{% endfor -%}
+"""
+{% endif -%}
+{% endif -%}

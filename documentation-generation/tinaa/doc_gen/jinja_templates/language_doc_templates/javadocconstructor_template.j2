@@ -1,0 +1,9 @@
+{% if doc_type == 'javadoc' and (code_type == 'constructor_declaration')-%}
+/**
+* {{ description }}
+*
+{% for param in parameters -%}
+* @param {{ param.name }} {{ param.description }}
+{% endfor -%}
+*/
+{% endif -%}

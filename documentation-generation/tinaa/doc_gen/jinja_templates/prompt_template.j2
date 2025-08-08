@@ -1,0 +1,23 @@
+I want you to act as a software engineer.
+Please fill out the provided dictionary template with values that describe the given {language} code.
+
+#Constraints:
+- Here is the dictionary template: {{template}}
+- Replace all the <placeholder> values.
+- Delete all hash comments in the dictionary template.
+- All values in the dictionary should be under 120 characters.
+{% if doc_type == 'numpydoc' and (code_type == 'class_declaration' or code_type == 'class_definition')-%}
+- If the class does not contain any attributes, replace the <placeholder> value with "None".
+{% endif -%}
+{% if doc_type == 'artdoc' and (code_type == 'statemachine')-%}
+- Art uses C++ as action and expression language. It also uses C++ for defining types, variables and functions. A C++ code snippet can be embedded into an Art file at many places by enclosing it with backticks. Here is an example of how to write the code that should execute when a transition triggers:
+    S1 -> S2 on timer.timeout
+    `
+        std::cout << "Hello World!" << std::endl;
+    `;
+- Include descriptions of C++ code in the generated values.
+- PseudoStates in ART include initial, choice, junction, entrypoint and exitpoint states. Transitions cannot be pseudostates.
+{% endif -%}
+- Do not give any code.
+Here is the code to be commented:
+{{code}}

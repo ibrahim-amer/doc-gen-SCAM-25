@@ -1,0 +1,9 @@
+{% if doc_type == 'tsdoc' and (code_type == 'constructor_declaration')-%}
+/**
+* {{ description }}
+*
+{% for param in parameters -%}
+* @param {{ param }} {{ parameters[param] }}
+{% endfor -%}
+*/
+{% endif -%}

@@ -1,0 +1,25 @@
+{% if doc_type == 'artdoc' and (code_type == 'statemachine')-%}
+/** 
+* {{ summary }} 
+*
+* {{ long_description }} 
+{% if states -%}
+*
+{% for state in states -%}
+ * @state {{ state.name }}: {{ state.description }}
+{% endfor -%}
+{% endif -%}
+{% if pseudostates-%}
+*
+{% for pseudostate in pseudostates -%}
+ * @pseudostate {{ pseudostate.name }} ({{ pseudostate.type }} state): {{ pseudostate.description }}
+{% endfor -%}
+{% endif -%}
+{% if transitions-%}
+*
+{% for transition in transitions -%}
+* @transition {{ transition.name }}[{{ transition.source }} -> {{ transition.target }}]: {{ transition.description }}
+{% endfor -%}
+{% endif -%}
+*/
+{% endif -%}

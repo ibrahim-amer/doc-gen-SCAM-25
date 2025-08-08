@@ -1,0 +1,46 @@
+include:
+  - project: 'tinaa/platform/libraries/cicd'
+    ref: master
+    file: '/library.gitlab-ci.yml'
+
+variables:
+  REGISTRY_USER: $CI_REGISTRY_USER
+  REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+  REGISTRY_SERVER: $CI_REGISTRY
+  PYTHON_VERSION: '3.9'
+  
+publish_job:
+  image:  registry.gitlab.tinaa.osc.tac.net/tinaa/container-registry/runners/python:3.8
+
+
+# functional testing:
+#   stage: code validation
+#   image:
+#     name: docker:dind
+#   tags:
+#     - docker-runner
+#   only:
+#     - branches
+#   except:
+#     - qa
+#     - preprod
+#     - master
+  # before_script:
+  #   - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin $REGISTRY_SERVER
+  #   - docker compose -f docker-compose-functional.yml down --remove-orphans --volumes
+  # script:
+  #   - docker compose -f docker-compose-functional.yml up --build --force-recreate --exit-code-from testend testend
+  # after_script:
+  #   - docker compose -f docker-compose-functional.yml cp testend:/opt/ft/tests/functional_test/behave_test/reports .
+  #   - docker compose -f docker-compose-functional.yml down --remove-orphans --volumes
+  # timeout: 4h
+  # artifacts:
+  #   when: always
+  #   expose_as: 'Functional Test'
+  #   paths:
+  #     - 'reports/'
+  #   reports:
+  #     junit: reports/TESTS-*.xml
+  #   expire_in: 365 days
+
+

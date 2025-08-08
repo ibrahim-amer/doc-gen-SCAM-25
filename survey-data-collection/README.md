@@ -53,10 +53,6 @@ Participants assess each generated docstring based on the following criteria:
 
 ### 1️⃣ Clone the Repository
 
-```bash
-git clone https://github.com/your-username/survey-data-collection.git
-cd survey-data-collection
-```
 
 ### 2️⃣ Configure Environment Variables
 

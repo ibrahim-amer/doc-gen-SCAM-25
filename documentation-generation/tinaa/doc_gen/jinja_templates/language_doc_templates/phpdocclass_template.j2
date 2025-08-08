@@ -1,0 +1,15 @@
+{% if doc_type == 'phpdoc' and (code_type == 'class_declaration')-%}
+/**
+* {{ one_line_summary }}
+*
+* {{ description }}
+*
+* @author GenAI generated
+{% if methods-%}
+*
+{% for method in methods -%}
+ * @method {{ method.name_and_parameters }}
+{% endfor -%}
+{% endif -%}
+ */
+{% endif -%}

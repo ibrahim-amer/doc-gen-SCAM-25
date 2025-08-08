@@ -1,0 +1,59 @@
+[tool.poetry]
+name = "documentation-generation-package"
+version = "0.1.5"
+description = "Generate header comments with GenAI"
+authors = ["Nathanael Yao <18ny13@queensu.ca>"]
+readme = "README.md"
+keywords = ["tinaa"]
+repository = "https://gitlab.tinaa.osc.tac.net/tinaa/devops-irc/documentation-generation-package"
+homepage = "https://gitlab.tinaa.osc.tac.net/tinaa/devops-irc/documentation-generation-package"
+
+include = [
+  "tinaa/doc_gen/jinja_templates/**/*"
+]
+packages = [
+    {include="tinaa"}
+]
+
+[[tool.poetry.source]]
+name = "tinaa"
+url = "https://gitlab.tinaa.osc.tac.net/api/v4/projects/1029/packages/pypi/simple"
+priority = "supplemental"
+
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pyyaml = "6.0.2"
+openai = "1.82.0"
+jinja2 = "3.1.6"
+arpeggio = "2.0.2"
+tree-sitter = "0.23.2"
+tree_sitter_language_pack = "0.7.3"
+google-generativeai = "0.8.5"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^5.0.4"
+pytest = "^7.3.1"
+pytest-mock = "^3.6.1"
+coverage = {version = "^7.2.3", extras = ["toml"]}
+freezegun = "^1.2.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+command_line = "-m pytest"
+omit = ["tests/*"]
+source = ["tinaa"]
+
+[tool.coverage.report]
+fail_under = 80
+omit = ["tests/*"]
+show_missing = true
