@@ -1,0 +1,17 @@
+#@@ Uploads app and dSYM files to HockeyApp and provides installation URL.
+#@ This code uploads the app and dSYM files to HockeyApp using curl command and provides the installation URL upon successful upload. It also uses the HockeyApp API token for authentication.
+hockey: zip_dsym
+	@echo "${INFO_CLR}>> Uploading ${RESET_CLR}${RESULT_CLR}$(APP).app.dSYM.zip...${RESET_CLR}" ;
+	@curl https://rink.hockeyapp.net/api/2/apps/upload \
+		-F "status=2" \
+		-F notify=1 \
+		-F notes="$(subst '\\r','%A0',$(GIT_LOG))" \
+		-F notes_type=0 \
+		-F ipa=@"$(IPA_FILE)" \
+		-F dsym=@"$(BUILD_PATH)/$(APP).app.dSYM.zip" \
+		-H X-HockeyAppToken: "$(HOCKEY_APP_API_TOKEN)" \
+		-o $(BUILD_PATH)/hockey_upload_result.log 2>&1
+	@echo "${RESULT_CLR}** UPLOAD SUCCEEDED **\n>> INSTALL URL: "
+	@cat $(BUILD_PATH)/hockey_upload_result.log \
+		| grep -o 'https*://[^\"]*.hockeyapp.net/apps/[^\"]*' \
+		| cat && printf "${RESET_CLR}"

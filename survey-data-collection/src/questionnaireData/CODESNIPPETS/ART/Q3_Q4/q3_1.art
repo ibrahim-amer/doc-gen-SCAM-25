@@ -1,0 +1,34 @@
+    /** 
+    * State machine for pinging and handling responses. 
+    *
+    * This state machine manages ping requests and responses, including timeouts for retries. 
+    *
+    * @state State1 State where pinging occurs and responses are handled.
+    *
+    * @pseudostate init (initial state): Initial state that triggers the first ping.
+    *
+    * @transition gotPong[State1 -> State1]: Transition on receiving a pong response.
+    * @transition gotTimeout[State1 -> State1]: Transition on timer timeout to send another ping.
+    */
+    
+    statemachine {
+        state State1
+	
+        init: initial -> State1
+           `    log.show(getName());
+                log.log(" sends ping");
+                log.commit();
+                pingPort.ping(count).send();
+           `;
+	   
+	gotPong: State1 -> State1 on pingPort.pong
+           `    timing.informIn(RTTimespec(1,0));
+           `;
+	   
+        gotTimeout: State1 -> State1 on timerPort.timeout
+           `   log.show(getName());
+               log.log(" sends ping");
+               log.commit();
+               pingPort.ping(++count).send();
+           `;
+    };

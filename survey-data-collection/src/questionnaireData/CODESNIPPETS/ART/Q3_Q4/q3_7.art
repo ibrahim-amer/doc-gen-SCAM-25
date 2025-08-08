@@ -1,0 +1,30 @@
+    /** 
+    * State machine for handling command notifications. 
+    *
+    * This state machine waits for commands and notifies subscribers based on the received command type. 
+    *
+    * @state WaitForRequest State where the system waits for incoming commands.
+    *
+    * @transition wrongWay[WaitForRequest -> WaitForRequest]: Handles wrong way command and notifies subscriber.
+    * @transition goalReached[WaitForRequest -> WaitForRequest]: Handles goal reached command and notifies subscriber.
+    */
+    
+    statemachine {
+        state WaitForRequest;
+	
+	wrongWay: WaitForRequest -> WaitForRequest on commandPort.wrongWay
+           `   SubscribeData_WrongWay* subscribeData = static_cast<SubscribeData_WrongWay*>(getSubscription("WrongWay"));
+               if (subscribeData) {
+                  const RTString* str = rtdata;
+                  subscribeData->notifySubscriber(str);
+               }
+           `;
+		  
+       goalReached: WaitForRequest -> WaitForRequest on commandPort.goalReached
+           `   SubscribeData_GoalReached* subscribeData = static_cast<SubscribeData_GoalReached*>(getSubscription("GoalReached"));
+               if (subscribeData) {
+                  const unsigned int* stepCount = rtdata;
+                  subscribeData->notifySubscriber(*stepCount);
+               }
+          `;
+    };

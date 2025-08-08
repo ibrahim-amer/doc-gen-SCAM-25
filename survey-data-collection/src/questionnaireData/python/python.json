@@ -1,0 +1,26 @@
+{
+    "introHtmlPath": "intros/python/intro.html",
+    "languageExperienceField": "Python",
+    "questions": [
+      {
+        "type": "metrics",
+        "questionId": "",
+        "question": "Evaluate the header comment preceding the function definition below: ",
+        "codeSnippetPath": "CODESNIPPETS/PYTHON/Q1_Q2/",
+        "language": "python"
+      },
+      {
+        "type": "metrics",
+        "questionId": "",
+        "question": "Evaluate the header comment preceding the function definition below: ",
+        "codeSnippetPath": "CODESNIPPETS/PYTHON/Q3_Q4/",
+        "language": "python"
+      },
+      {
+        "type": "text",
+        "questionId": "FeedbackQuestion",
+        "question": "Leave any feedback if you want to.",
+        "required": false
+      }
+    ]
+  }

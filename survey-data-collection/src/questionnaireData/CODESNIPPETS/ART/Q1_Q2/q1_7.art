@@ -1,0 +1,27 @@
+    /** 
+    * State machine for handling sensor events. 
+    *
+    * This state machine transitions between states based on an external event and sensor status. 
+    *
+    * @state State Initial state waiting for external event.
+    * @state State2 State reached when sensor is OFF.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    * @pseudostate check (choice state): Decision point based on sensor status.
+    *
+    * @transition init[initial -> State]: Transition to State on initialization.
+    * @transition ext.event[State -> check]: Transition triggered by external event.
+    * @transition sensor_ON[check -> State]: Return to State if sensor is ON.
+    * @transition sensor_OFF[check -> State2]: Transition to State2 if sensor is OFF.
+    */
+    
+    statemachine {
+        state State, State2;
+	
+        init: initial -> State;
+        choice check; 
+        State -> ch on ext.event;
+        check -> State when `return sensor==ON`;
+        check -> State2 when `else`;
+	
+    };

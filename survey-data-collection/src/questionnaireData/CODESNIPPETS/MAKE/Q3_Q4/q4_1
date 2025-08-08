@@ -1,0 +1,28 @@
+#@@ Set up the environment for Go programming by updating .gitignore and fetching dependencies.
+#@ The code sets up the environment for Go programming by adding "/.GOPATH" and "/bin" to the .gitignore file if they are not already present. It then fetches the dependencies using the "gvt" tool for package management.
+setup: clean .GOPATH/.ok
+	@if ! grep "/.GOPATH" .gitignore > /dev/null 2>&1; then \
+	    echo "/.GOPATH" >> .gitignore; \
+	    echo "/bin" >> .gitignore; \
+	fi
+	go get -u github.com/FiloSottile/gvt
+	- ./bin/gvt fetch golang.org/x/tools/cmd/goimports
+	- ./bin/gvt fetch github.com/wadey/gocovmerge
+
+VERSION          := $(shell git describe --tags --always --dirty="-dev")
+DATE             := $(shell date -u '+%Y-%m-%d-%H%M UTC')
+VERSION_FLAGS    := -ldflags='-X "main.Version=$(VERSION)" -X "main.BuildTime=$(DATE)"'
+
+# cd into the GOPATH to workaround ./... not following symlinks
+_allpackages = $(shell ( cd $(CURDIR)/.GOPATH/src/$(IMPORT_PATH) && \
+    GOPATH=$(CURDIR)/.GOPATH go list ./... 2>&1 1>&3 | \
+    grep -v -e "^$$" $(addprefix -e ,$(IGNORED_PACKAGES)) 1>&2 ) 3>&1 | \
+    grep -v -e "^$$" $(addprefix -e ,$(IGNORED_PACKAGES)))
+
+# memoize allpackages, so that it's executed only once and only if used
+allpackages = $(if $(__allpackages),,$(eval __allpackages := $$(_allpackages)))$(__allpackages)
+
+export GOPATH := $(CURDIR)/.GOPATH
+unexport GOBIN
+
+Q := $(if $V,,@)

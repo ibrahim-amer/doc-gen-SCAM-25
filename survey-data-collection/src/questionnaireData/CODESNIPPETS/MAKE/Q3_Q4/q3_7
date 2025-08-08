@@ -1,0 +1,11 @@
+#@@ Script for packaging an application and creating an IPA file.
+#@ This script performs the packaging process for an application by creating necessary directories, copying files, and creating an IPA file. It also includes a call to restore the icon.
+package:
+	@echo "${INFO_CLR}>> PACKAGING $(APP)...${RESTORE_CLR}"
+	@rm -rf "$(PAYLOAD_PATH)" "$(UPLOAD_PATH)"
+	@mkdir -p "$(PAYLOAD_PATH)" "$(UPLOAD_PATH)"
+	-@[ -e "$(ICON_PATH)/$(ICON_FILE)" ] && cp "$(ICON_PATH)/$(ICON_FILE)" "$(UPLOAD_PATH)/icon.png" 2>/dev/null
+	@cp -r "$(IPA_BUILD_FOLDER)" "$(PAYLOAD_PATH)"
+	@cd "$(BUILD_PATH)"; zip -rq "$(IPA_FILE)" "Payload" && rm -rf "$(PAYLOAD_PATH)"
+	@echo "${RESULT_CLR}** PACKAGE SUCCEEDED **${RESET_CLR}\n"
+	$(call icon_restore)

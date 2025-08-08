@@ -1,0 +1,6 @@
+#@@ Uploads the specified application to a remote server using rsync and SSH.
+#@ This code snippet defines a make target "upload" that uploads the specified application to a remote server using rsync with progress indication and SSH. It uses environment variables like SFTP_PORT, UPLOAD_PATH, SFTP_SERVER, SFTP_PATH, and BASE_URL for configuration. After a successful upload, it displays a success message with the base URL.
+upload:
+	@echo "${INFO_CLR}>> UPLOADING $(APP)...${RESET_CLR}"
+	@rsync --progress -azvhe "ssh -p ${SFTP_PORT}" "$(UPLOAD_PATH)/." "$(SFTP_SERVER):$(SFTP_PATH)"
+	@echo "${RESULT_CLR}** UPLOAD SUCCEEDED **\n** $(BASE_URL) **${RESET_CLR}"

@@ -1,0 +1,4 @@
+#@@ Builds and installs the Go package at the specified import path.
+#@ The "build" target compiles and installs the Go package located at the specified import path. It uses the "go install" command with optional verbose flag and version flags.
+build: .GOPATH/.ok
+	$Q go install $(if $V,-v) $(VERSION_FLAGS) $(IMPORT_PATH)

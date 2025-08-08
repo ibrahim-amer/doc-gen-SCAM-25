@@ -1,0 +1,4 @@
+#@@ Prints all the packages in the GOPATH/.ok directory.
+#@ This code prints the list of all the packages in the directory GOPATH/.ok using the echo command.
+list: .GOPATH/.ok
+	@echo $(allpackages)

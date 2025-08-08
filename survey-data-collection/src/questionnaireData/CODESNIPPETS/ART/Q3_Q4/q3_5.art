@@ -1,0 +1,46 @@
+    /** 
+    * State machine for managing walking and stopping actions of a server. 
+    *
+    * This state machine controls the server behavior for walking and stopping based on UI readiness and signals. 
+    *
+    * @state DoNotWalk State where the server is instructed to stop walking.
+    * @state Walk State where the server is instructed to start walking.
+    * @state WaitForUIReady State waiting for the UI to be ready before proceeding.
+    *
+    * @pseudostate initial (initial state): Initial state transitioning to WaitForUIReady.
+    *
+    * @transition init[initial -> WaitForUIReady]: Transition to WaitForUIReady state.
+    * @transition ready[WaitForUIReady -> DoNotWalk]: Transition to DoNotWalk on serverPort ready.
+    * @transition walk[DoNotWalk -> Walk]: Transition to Walk on pedCtrlPort.walk signal.
+    * @transition countdown[Walk -> Walk]: Handle remaining time while in Walk state.
+    * @transition stop[Walk -> DoNotWalk]: Transition to DoNotWalk on stop signal.
+    */
+    
+    statemachine {
+    
+        state DoNotWalk {
+            entry
+	       `  server.stop().send();
+               `;
+        };
+	
+        state Walk {
+            entry
+	       `  server.walk().send();
+               `;
+        };
+        state WaitForUIReady;
+	
+        init: initial -> WaitForUIReady;
+	
+        ready: WaitForUIReady -> DoNotWalk on serverPort.rtBound;
+	
+        walk: DoNotWalk -> Walk on pedCtrlPort.walk;
+	
+        countdown: Walk -> Walk on pedCtrlPort.timeRemaining
+           `   int time = *rtdata;
+               serverPort.timeRemaining(time).send();
+           `;
+        stop: Walk -> DoNotWalk on pedCtrlPort.stop;
+	
+    };

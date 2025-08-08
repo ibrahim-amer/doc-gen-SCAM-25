@@ -1,0 +1,18 @@
+    /** 
+    * Simple state machine for startup logging. 
+    *
+    * This state machine initializes and transitions to State1, logging a startup message. 
+    *
+    * @state State1 Initial state where the system starts up and logs a message.
+    *
+    * @pseudostate init (initial state): Starting point of the state machine.
+    *
+    * @transition initial[init -> State1]: Transition to State1 on initialization.
+    */
+    
+    statemachine{
+        state State1;
+        init: initial -> State1 
+           `   std::cout << "[Top] starting up" << std::endl;
+           `;
+    };

@@ -1,0 +1,27 @@
+{
+    "introHtmlPath":
+      "intros/art/intro.html",
+    "languageExperienceField": "art",
+    "questions": [
+      {
+        "type": "metrics",
+        "questionId": "",
+        "question": "Evaluate the header comment preceding the function definition below: ",
+        "codeSnippetPath": "CODESNIPPETS/ART/Q1_Q2/",
+        "language": "java"
+      },
+      {
+        "type": "metrics",
+        "questionId": "",
+        "question": "Evaluate the header comment preceding the function definition below: ",
+        "codeSnippetPath": "CODESNIPPETS/ART/Q3_Q4",
+        "language": "java"
+      },
+      {
+        "type": "text",
+        "questionId": "FeedbackQuestion",
+        "question": "Leave any feedback if you want to.",
+        "required": false
+      }
+    ]
+  }

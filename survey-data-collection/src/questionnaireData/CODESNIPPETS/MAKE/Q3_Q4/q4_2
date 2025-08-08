@@ -1,0 +1,21 @@
+#@@ Make target to generate and display test coverage report for Go code.
+#@ The "cover" target in the Makefile runs tests and generates a coverage report for Go code. It uses gocovmerge to combine coverage profiles and go tool cover to display the coverage report. Note that the make cover command does not exit 1 on failure, so it should not be used to check for test success.
+cover: bin/gocovmerge .GOPATH/.ok
+	@echo "NOTE: make cover does not exit 1 on failure, don't use it to check for tests success!"
+	$Q rm -f .GOPATH/cover/*.out .GOPATH/cover/all.merged
+	$(if $V,@echo "-- go test -coverpkg=./... -coverprofile=.GOPATH/cover/... ./...")
+	@for MOD in $(allpackages); do \
+		go test -coverpkg=`echo $(allpackages)|tr " " ","` \
+			-coverprofile=.GOPATH/cover/unit-`echo $$MOD|tr "/" "_"`.out \
+			$$MOD 2>&1 | grep -v "no packages being tested depend on"; \
+	done
+	$Q ./bin/gocovmerge .GOPATH/cover/*.out > .GOPATH/cover/all.merged
+ifndef CI
+	$Q go tool cover -html .GOPATH/cover/all.merged
+else
+	$Q go tool cover -html .GOPATH/cover/all.merged -o .GOPATH/cover/all.html
+endif
+	@echo ""
+	@echo "=====> Total test coverage: <====="
+	@echo ""
+	$Q go tool cover -func .GOPATH/cover/all.merged

@@ -1,0 +1,11 @@
+#@@ Send iMessage with app download link to specified addresses.
+#@ This code iterates through a list of addresses and sends an iMessage containing the app download link using osascript.
+imessage:
+	@for address in $(IMSG_LIST) ; do \
+		echo "${INFO_CLR}>> SENDING IMESSAGE >${RESET_CLR} ${RESULT_CLR}$$address...${RESET_CLR}" ; \
+		osascript -e "set toAddress to \"$${address}\"" \
+		-e "tell application \"Messages\"" \
+		-e "set theBuddy to buddy toAddress of (first service whose service type is iMessage)" \
+		-e "send \"$(app_title) is ready itms-services://?action=download-manifest&url=$(BASE_URL)/$(APP).ipa.plist\" to theBuddy" \
+		-e "end tell" ; \
+	done

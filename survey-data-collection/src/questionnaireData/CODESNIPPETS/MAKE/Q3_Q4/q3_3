@@ -1,0 +1,9 @@
+#@@ Script for checking and updating version tags in git repository.
+#@ This script checks if a specific version tag already exists in the git repository, and if not, it sets the release version, adds, commits, and tags the changes. It also pushes the tags to the remote repository if available.
+tag: check-status
+	@. $(RELEASE_SUPPORT) ; ! tagExists $(TAG) || (echo "ERROR: tag $(TAG) for version $(VERSION) already tagged in git" >&2 && exit 1) ;
+	@. $(RELEASE_SUPPORT) ; setRelease $(VERSION)
+	git add .
+	git commit -m "bumped to version $(VERSION)" ;
+	git tag $(TAG) ;
+	@ if [ -n "$(shell git remote -v)" ] ; then git push --tags ; else echo 'no remote to push tags to' ; fi

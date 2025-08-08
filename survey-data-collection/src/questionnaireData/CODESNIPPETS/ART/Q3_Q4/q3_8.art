@@ -1,0 +1,46 @@
+    /** 
+    * State machine for managing Up and Down states based on port activations. 
+    *
+    * This state machine handles transitions between Up and Down states based on the activation of left and right ports. 
+    *
+    * @state Down State representing the system being in the Down position.
+    * @state Up State representing the system being in the Up position.
+    *
+    * @pseudostate init (initial state): Initial state where the system starts and initializes variables.
+    *
+    * @transition gotUpFromLeft[Down -> Up]: Transition to Up state when left port is activated.
+    * @transition gotUpFromRight[Down -> Up]: Transition to Up state when right port is activated.
+    * @transition gotUpFromLeftAgain[Up -> Up]: Stay in Up state when left port is activated again.
+    * @transition gotUpFromRightAgain[Up -> Up]: Stay in Up state when right port is activated again.
+    * @transition gotDown[Up -> Down]: Transition back to Down state when both ports are deactivated.
+    */
+    
+    statemachine {
+        state Down, Up;
+	
+        init: initial -> Down
+	   `   myName = getName();  // what is my name?
+               std::cout << myName << " starting up"  << std::endl;
+           `;
+	   
+        gotUpFromLeft: Down -> Up on leftPort.up
+	   `   leftPort.ack().send();
+           `;
+	   
+        gotUpFromRight: Down -> Up on rightPort.up
+	   `   rightPort.ack().send();
+           `;
+	   
+        gotUpFromLeftAgain: Up -> Up on leftPort.up
+	   `   leftP.nack().send();
+           `;
+	   
+        gotUpFromRightAgain: Up -> Up on rightP.up
+	   `   rightP.nack().send();
+           `;
+	   
+        gotDown: Up -> Down on rightPort.down, leftPort.down
+	   `
+           `;
+	   
+    };

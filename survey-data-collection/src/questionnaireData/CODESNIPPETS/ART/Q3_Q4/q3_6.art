@@ -1,0 +1,46 @@
+    /** 
+    * State machine for a slow pinging operation with a timer. 
+    *
+    * This state machine manages a slow ping operation, transitioning based on timer and count conditions. 
+    *
+    * @state State1 Initial state where a timer is set for 2 seconds.
+    * @state Done Final state that indicates completion with a message.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    * @pseudostate check (choice state): Decision point based on the count value.
+    *
+    * @transition init[initial -> State1]: Transition to State1 with initialization message.
+    * @transition timeout[State1 -> State1]: Increment count and send ping on timeout.
+    * @transition result[State1 -> check]: Transition based on the result of the ping.
+    * @transition less10[check -> State1]: Return to State1 if count is less than 10.
+    * @transition else[check -> Done]: Transition to Done if count is 10 or more.
+    */
+    
+    statemachine {
+        state State1 {
+            entry
+	       `  timerPort.informIn(RTTimespec(2,0)); // 2 seconds
+               `;
+        }
+	state Done {
+            entry
+	       `  std::cout << "Done!" << std::endl;
+               `;
+        };
+	
+        init: initial -> State1
+	   `   std::cout << "Slow Pinger initialized!" << std::endl << std::flush;;
+           `;
+	   
+	timeout: State1 -> State1 on timerPort.timeout
+	   `    count++;
+                port.ping().send();
+           `;
+        result: State1 -> choice1 on port.result;
+	
+        choice check;
+	
+        less10: check -> State1 when `return count < 10;`;
+	
+        else: check -> Done when `else`;
+    };

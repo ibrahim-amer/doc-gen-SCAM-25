@@ -1,0 +1,12 @@
+#@@ Run coverage tests for the specified Go packages and generate coverage reports.
+#@ This target runs coverage tests for the specified Go packages and generates coverage reports in various formats such as HTML and XML. It also calculates and prints the code coverage percentage.
+test-coverage: ; $(info $(M) running coverage tests…) @ ## Run coverage tests
+	$Q mkdir -p test
+	$Q $(GO) tool gotestsum -- \
+		-coverpkg=$(shell echo $(PKGS) | tr ' ' ',') \
+		-covermode=$(COVERAGE_MODE) \
+		-coverprofile=test/profile.out $(PKGS)
+	$Q $(GO) tool cover -html=test/profile.out -o test/coverage.html
+	$Q $(GO) tool gocov convert test/profile.out | $(GO) tool gocov-xml > test/coverage.xml
+	@echo -n "Code coverage: "; \
+		echo "scale=1;$$(sed -En 's/^<coverage line-rate="([0-9.]+)".*/\1/p' test/coverage.xml) * 100 / 1" | bc -q

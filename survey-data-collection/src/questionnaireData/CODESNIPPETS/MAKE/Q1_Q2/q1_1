@@ -1,0 +1,4 @@
+#@@ Checks if ICON_TAG is "YES" and executes a PHP script to update icon version.
+#@ The code checks the value of ICON_TAG and if it is "YES", it executes a PHP script to update the icon version by writing the value of icon_version_php to a temporary file and running the PHP interpreter on that file.
+icon_version:
+	-@if [ "YES" = "$(ICON_TAG)" ]; then echo "$$icon_version_php" > /tmp/icon_version.php && /usr/bin/php /tmp/icon_version.php; fi

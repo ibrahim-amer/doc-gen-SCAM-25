@@ -1,0 +1,33 @@
+    /** 
+    * Traffic light state machine controlling light transitions. 
+    *
+    * This state machine manages traffic light states and transitions based on switchLights events. 
+    *
+    * @state Red State indicating the traffic light is red.
+    * @state Green State indicating the traffic light is green.
+    * @state Yellow State indicating the traffic light is yellow.
+    *
+    * @pseudostate init (initial state): Initial state of the traffic light system.
+    *
+    * @transition goGreen[Red -> Green]: Transition from Red to Green on switchLights event.
+    * @transition goYellow[Green -> Yellow]: Transition from Green to Yellow on switchLights event.
+    * @transition goRed[Yellow -> Red]: Transition from Yellow to Red on switchLights event.
+    */
+    
+    statemachine {
+        state Red, Green, Yellow;
+	
+        init: initial -> Red;
+	
+        goGreen: Red -> Green on port.switchLights
+           `    theLogger->logMsg("Green");
+           `;
+	   
+        goYellow: Green -> Yellow on port.switchLights
+           `    theLogger->logMsg("Yellow");
+           `;
+	   
+        goRed: Yellow -> Red on port.switchLights
+           `    theLogger->logMsg("Red");
+           `;
+    };

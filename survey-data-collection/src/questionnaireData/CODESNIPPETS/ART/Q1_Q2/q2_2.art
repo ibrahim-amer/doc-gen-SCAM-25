@@ -1,0 +1,23 @@
+     /** 
+    * State machine for handling increment requests. 
+    *
+    * This state machine processes increment requests while remaining in the Idle state. 
+    *
+    * @state Idle The state where the system is waiting for an increment request.
+    *
+    * @pseudostate initial (initial state): The starting point of the state machine, transitioning to Idle.
+    *
+    * @transition init[initial -> Idle]: Transition from initial to Idle state.
+    * @transition incr[Idle -> Idle]: Stay in Idle while processing increment requests.
+    */
+    
+    statemachine {
+        state Idle;
+	
+        init: initial -> Idle;
+        incr: Idle -> Idle on port.getIncrement
+           `   int k = *rtdata;
+               double inc = std::pow(-3, -k) / (2 * k + 1);
+               port.returnIncrement(inc).send();
+           `;
+    };

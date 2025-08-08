@@ -1,0 +1,18 @@
+    /** 
+    * Simple state machine with an initial state transitioning to State1. 
+    *
+    * This state machine initializes and transitions to State1 while logging a startup message. 
+    *
+    * @state State1 The active state where the machine performs its operations.
+    *
+    * @pseudostate init (initial state): Initial state that triggers the transition to State1.
+    *
+    * @transition initial[initial -> State1]: Transition from initial to State1 with a log message.
+    */
+    
+    statemachine {
+        state State1;
+        init: initial -> State1
+           `   log.log("[Top] starting up");
+           `;
+    };

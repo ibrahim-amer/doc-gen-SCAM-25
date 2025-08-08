@@ -1,0 +1,27 @@
+    /** 
+    * State machine for controlling running lights. 
+    *
+    * This state machine manages the operation of running lights, switching them periodically based on a timer. 
+    *
+    * @state RunningLights State where the lights are switched on and off periodically.
+    *
+    * @pseudostate init (initial state): Initial state that sets up the light and timer.
+    *
+    * @transition switchLights[RunningLights -> RunningLights]: Transition triggered by the timer to switch lights.
+    */
+    
+    statemachine {
+        state RunningLights {
+            entry
+               `   theLight->switchLights();
+               `;
+            
+        };
+	
+        init: initial -> RunningLights
+           `   theLight = new Light(this);
+               timerPort.informEvery(RTTimespec(2,0));
+           `;
+	   
+        switchLights: RunningLights -> RunningLights on timerPort.timeout;
+    };

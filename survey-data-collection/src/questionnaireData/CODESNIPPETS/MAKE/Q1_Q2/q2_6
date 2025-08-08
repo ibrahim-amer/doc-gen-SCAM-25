@@ -1,0 +1,8 @@
+#@@ Creates a release file with version and tag information
+#@ The .release target in the makefile creates a file named .release with the release version, tag, and tag_on_changes_in information. It then displays an INFO message and prints the contents of the .release file.
+.release:
+	@echo "release=0.0.0" > .release
+	@echo "tag=$(NAME)-0.0.0" >> .release
+	@echo "tag_on_changes_in=." >> .release
+	@echo INFO: .release created
+	@cat .release

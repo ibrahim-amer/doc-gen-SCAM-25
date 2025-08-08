@@ -1,0 +1,8 @@
+#@@ Pushes Docker image to a repository with version and latest tags if conditions are met.
+#@ The "do-push" command pushes the Docker image with the specified version tag to the repository. If the "TAG_WITH_LATEST" variable is not set to "never" and either set to "always" or the "BASE_RELEASE" matches the "VERSION", it also pushes the image with the "latest" tag.
+do-push:
+	docker push $(IMAGE):$(VERSION)
+	@if [[ $(TAG_WITH_LATEST) != never ]] && ([[ $(TAG_WITH_LATEST) == always ]] || [[ $(BASE_RELEASE) == $(VERSION) ]]); then \
+		echo docker push $(IMAGE):latest >&2; \
+		docker push $(IMAGE):latest; \
+	fi

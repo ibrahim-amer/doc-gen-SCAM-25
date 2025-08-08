@@ -1,0 +1,16 @@
+    /** 
+    * Simple state machine waiting for requests 
+    *
+    * This state machine initializes and waits for requests, calling the superclass during initialization. 
+    *
+    * @state WaitForRequest State where the system waits for an incoming request.
+    *
+    * @pseudostate init (initial state): Initial state that transitions to WaitForRequest and calls the superclass.
+    */
+    
+    statemachine {
+        state WaitForRequest;
+        init: initial -> WaitForRequest
+           `   CALLSUPER;
+           `;
+    };

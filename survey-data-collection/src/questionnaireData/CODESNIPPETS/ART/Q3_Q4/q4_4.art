@@ -1,0 +1,44 @@
+    /** 
+    * State machine for managing TCP server and range counter initialization. 
+    *
+    * This state machine initializes a TCP server and range counter, handling command line input. 
+    *
+    * @state ManageCommandPrompt Handles command line parsing and server initialization for TCP requests.
+    *
+    * @pseudostate init (initial state): Initial state that transitions to ManageCommandPrompt.
+    *
+    * @transition initial[init -> ManageCommandPrompt]: Transition to ManageCommandPrompt to begin command processing.
+    */
+    
+    statemachine {
+        state ManageCommandPrompt {
+            entry
+            `   parseCommandLine();
+                if (port == 0) {                    
+                    context()->abort();
+                    return;
+                }
+
+                std::cout << "TcpRangeCounter listens for TCP requests on port " << port << std::endl;
+                RTActorId id = frame.incarnateCustom(server, 
+                    RTActorFactory([this](RTController * c, RTActorRef * a, int index) {
+                        return new Server(ServerThread, a, port); // Pass port and remotePort to capsule constructor
+                    }
+                ));
+                if (!id.isValid()) {
+                    std::cout << "Failed to start Server!" << std::endl;
+                }
+                id = frame.incarnateCustom(counter, 
+                    RTActorFactory([this](RTController * c, RTActorRef * a, int index) {
+                        return new RangeCounter(ServerThread, a);
+                    }
+                ));
+                if (!id.isValid()) {
+                    std::cout << "Failed to start RangeCounter!" << std::endl;
+                }
+                std::cout << "Ready to start counting!" << std::endl;
+            `;
+        };
+	
+        init: initial -> ManageCommandPrompt;
+    };

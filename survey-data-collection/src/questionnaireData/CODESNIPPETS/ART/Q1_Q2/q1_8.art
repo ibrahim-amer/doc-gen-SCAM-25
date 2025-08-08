@@ -1,0 +1,26 @@
+    /** 
+    * State machine for checking a value after a timer timeout. 
+    *
+    * This state machine transitions between states based on timer events and checks a condition using getVal. 
+    *
+    * @state State Main state where the timer is monitored and conditions are checked.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    * @pseudostate check (choice state): Decision point based on the value returned by getVal.
+    *
+    * @transition init[initial -> State]: Transition from initial to State.
+    * @transition timeout[State -> check]: Transition to check on timer timeout.
+    * @transition check_true[check -> State]: Return to State if getVal() equals 5.
+    * @transition check_else[check -> State]: Return to State for any other value.
+    */
+    
+    statemachine {
+        state State;
+	
+        init: initial -> State;
+        choice check; 
+        State -> check on timer.timeout;
+        check -> State when `return getVal()==5;`;
+        check -> State when `else`;
+	
+    };

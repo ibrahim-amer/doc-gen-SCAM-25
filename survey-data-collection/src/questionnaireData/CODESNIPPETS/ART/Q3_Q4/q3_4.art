@@ -1,0 +1,33 @@
+    /** 
+    * State machine for computing pi using Madhava's formula. 
+    *
+    * This state machine manages the computation of pi, transitioning from waiting to finished states. 
+    *
+    * @state WaitForComputation State where the system waits for the computation to complete.
+    * @state Finished State indicating that the computation is finished and aborting the context.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    *
+    * @transition init[initial -> WaitForComputation]: Initialize computation of pi and send request.
+    * @transition done[WaitForComputation -> Finished]: Transition to Finished state on receiving result.
+    */
+    
+    statemachine {
+        state WaitForComputation;
+	
+        state Finished {
+            entry
+	       `   context()->abort();
+               `;
+        };
+
+        init: initial -> WaitForComputation
+           `   int noOfIterations = 100;        
+               std::cout << "Starting computation of pi using the Madhavas formula with " << noOfIterations << " iterations" << std::endl;
+               port.compute(noOfIterations).send();
+           `;
+
+        done: WaitForComputation -> Finished on port.result
+           `   std::cout << "Result is : " << std::setprecision(20) << std::fixed << *rtdata << std::endl;
+           `;
+    };

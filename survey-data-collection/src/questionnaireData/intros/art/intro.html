@@ -1,0 +1,69 @@
+<div class="prose max-w-none mb-6">
+    <p>
+      The last language we consider is <strong>Art</strong>, a language used in commercial tools to describe a reactive system as a collection of communicating state machines and generate C++ code from them.
+    </p>
+    <p>
+      State machines in Art consist of regular states and pseudostates and transitions between them. Transitions out of regular states need a trigger (i.e., an incoming message) to run. Transitions out of pseudostates do not need a trigger. Examples of pseudostates are the initial state of the machine and choice points. A transition can have a guard (i.e., boolean expression) that puts a constraint on when the transition can be taken. A transition can also have action code, i.e., C++ code that is executed when the transition is taken.
+    </p>
+    <p>
+      For instance, the diagram below shows a state machine with two regular states (called “Play” and “Done”), two pseudostates (the initial state and a choice point called “check”), and four transitions (one from the initial state to state “Play” and three more involving the choice point).
+    </p>
+    <figure class="mb-6 text-center">
+      <img
+        src="/diagrams/art/pinger-state-machine.png"
+        alt="Pinger state machine diagram"
+        class="mx-auto rounded-md shadow-sm max-w-full h-auto"
+      />
+      <figcaption class="italic mt-2">Figure: “Pinger” state machine</figcaption>
+    </figure>
+    <p>
+      When run, this machine will first send a message <code>ping</code> on its <code>pingPort</code>. Then, upon receipt of a <code>pong</code> message on its <code>pongPort</code>, it will respond with another <code>ping</code> message. After sending out three such <code>ping</code> messages it will transition to the state <strong>Done</strong> and stop responding. Corresponding log‑messages are sent throughout.
+    </p>
+    <p>
+      The definition of this state machine in Art is shown below:
+    </p>
+    <div class="overflow-auto rounded-md border border-gray-200 mb-6">
+      <pre class="whitespace-pre-wrap p-4 bg-gray-50"><code class="language-java">
+  /* Simple State Machine for the 'Pinger' component of a 'Pinger/Ponger' system
+   *
+   * This state machine illustrates the sending and receiving of messages
+   * as well as transitions with guards. Sends out a 'ping' message as long
+   * as less than 3 'pong' messages have been received.
+   *
+   * @state Play State in which the machine is responsive to incoming messages
+   * @state Done State in which the machine is unresponsive and will not interact anymore
+   *
+   * @pseudostate initial (initial state): Execution starts here
+   *
+   * @transition init[initial -> Play]: Initializes the counter and sends out the first 'ping' message
+   * @transition receivedPong[Play -> check]: Triggered when a 'pong' message is received
+   * @transition less3[check -> Play]: When less than 3 'ping' messages have been sent out, component will continue to respond
+   * @transition else[check -> Done]: When 3 or more 'ping' messages have been sent out, component will stop responding
+   */
+  statemachine {
+     state Play
+     state Done
+     init: initial -> Play `
+       count = 1;
+       pingPort.ping().send();
+       logPort.log('ping sent!');
+     `;
+     receivedPong: Play -> check on pongPort.pong;
+     choice check;
+     less3: check -> Play when `return count < 3;` `
+       count++;
+       pingPort.ping().send();
+       logPort.log('ping sent!');
+     `;
+     else: check -> Done when `else`;
+  };
+      </code></pre>
+    </div>
+    <p>
+      The header comment for this machine contains descriptions for the machine overall, as well as its states, pseudostates, and transitions. For transitions, their names and source and target states are shown as well.
+    </p>
+    <p>
+      More complex state machines may have composite states, i.e., states that contain a sub‑state machine. Transitions enter a composite state through an entry point and exit it through an exit point. Entry and exit points are also pseudostates, i.e., they are just intermediate points in a sequence of transitions and do not need a trigger.
+    </p>
+  </div>
+  

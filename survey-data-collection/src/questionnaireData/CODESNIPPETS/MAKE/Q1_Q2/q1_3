@@ -1,0 +1,4 @@
+#@@ Remove unnecessary files and core dumps from the directory.
+#@ The "clean" command is used to remove object files, core dumps, and temporary files from the specified directory. It helps to keep the directory clean and free from unnecessary clutter.
+clean: # core is for core dumps!
+	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~

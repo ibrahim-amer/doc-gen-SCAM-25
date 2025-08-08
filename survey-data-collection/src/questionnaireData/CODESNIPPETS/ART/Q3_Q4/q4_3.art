@@ -1,0 +1,46 @@
+    /** 
+    * State machine for managing request handling in a server. 
+    *
+    * This state machine waits for requests, processes them, and logs the activity if enabled. 
+    *
+    * @state WaitForRequest State where the system waits for incoming requests and enables the external port.
+    * @state Stopped State representing the stopped condition of the system, not actively processing requests.
+    *
+    * @pseudostate init (initial state): Initial state that sets up the server when the state machine starts.
+    *
+    * @transition requestReceived[WaitForRequest -> WaitForRequest]: Handles incoming requests and processes available external data.
+    */
+    
+    statemachine {
+        state WaitForRequest {
+            entry
+            `
+                externalPort.enable();
+            `;
+        };
+        state Stopped;
+        init: initial -> WaitForRequest
+           `   initServer();
+           `;
+        requestReceived: WaitForRequest -> WaitForRequest on externalPort.event
+           `   if (logToStdOut)
+	          std::cout << "Request received" << std::endl;
+
+               // Process all available external data
+               unsigned int remaining;
+               do {
+                  CallData* request;
+                  remaining = external.dataPopFront((void**) &request);
+
+                  if (request == nullptr)
+                     break; // No more data available
+
+                  request->proceed();
+                  // No need to delete the request here, since it's automatically deleted when processed
+               }
+               while (remaining > 0);
+
+               if (logToStdOut)
+                  std::cout << "Request processed" << std::endl;
+           `;
+    };    

@@ -1,0 +1,14 @@
+    /** 
+    * Simple state machine with one initial state. 
+    *
+    * This state machine initializes with a single state, State1, where execution starts. 
+    *
+    * @state State1 The initial state of the state machine where execution begins.
+    *
+    * @pseudostate init (initial state): The starting point of the state machine.
+    */
+    
+    statemachine {
+        state State1;
+        init: initial -> State1;
+    };

@@ -1,0 +1,23 @@
+    /** 
+    * State machine for handling ping requests and logging timestamps. 
+    *
+    * This state machine manages ping requests, logging the time of each ping received in State2. 
+    *
+    * @state State2 State where the system responds to ping requests and logs the time of the ping.
+    *
+    * @pseudostate initial (initial state): The starting point of the state machine, transitioning to State2.
+    *
+    * @transition gotPing[State2 -> State2]: Transition triggered by receiving a ping, logging the current time.
+    */
+    
+    statemachine {
+        state State2
+	
+        init: initial -> State2;
+	
+	gotPing: State2 -> State2 on port.ping
+	   `   auto curr_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+               std::cout << "Pinged on " << std::ctime(&curr_time) << std::endl << std::flush;
+               port.result().send();  
+           `;
+    };

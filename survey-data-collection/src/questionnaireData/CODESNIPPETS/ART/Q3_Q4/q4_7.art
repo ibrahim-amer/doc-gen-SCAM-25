@@ -1,0 +1,58 @@
+    /** 
+    * State machine for a ping-pong game simulation between two players. 
+    *
+    * This state machine manages the ping-pong game, handling pings and responses, logging events, and transitioning based on game state. 
+    *
+    * @state State1: State where pings are sent and pong responses are handled.
+    * @state Done: Final state where the game stops and results are logged.
+    *
+    * @pseudostate myChoice (choice state): Decision point based on whether to continue pinging or stop.
+    * @pseudostate initial (initial state): Starting point of the state machine where game initialization occurs.
+    *
+    * @transition initial_to_State1[initial -> State1]: Transition to State1 after initializing game parameters.
+    * @transition State1_to_myChoice[State1 -> myChoice]: Transition on receiving a pong response from the other player.
+    * @transition myChoice_to_State1[myChoice -> State1]: Continue pinging if the count is less than ROUNDS.
+    * @transition myChoice_to_Done[myChoice -> Done]: Transition to Done state when the game ends.
+    */
+    
+    statemachine {
+        choice myChoice;
+        state State1, Done {
+            entry  `   log.log("[Pinger] stopping");
+                   `;
+        };
+        initial -> State1
+	   `   std::cout << "Enter number of Rounds" << std::endl;
+               std::cin >> ROUNDS;
+               RTTimespec::getclock(startTime);
+               prevTime = startTime;
+	       
+               // Start the game by sending a "ping" to the other player
+               log.log("[Pinger] starting game");
+               pingPort.ping().send();
+               log.show("[Pinger] ping sent ... ");                
+           `;
+        State1 -> myChoice on pingPort.pong 
+           `   log.log("[Pinger] pong received!");
+               // grab current time and store in nowTime
+               RTTimespec::getclock(nowTime);         
+               // RTTimespec diff = nowTime - prevTime;
+               // std::cout << "[Pinger] time of previous pong:" << prevTime.tv_sec << " Seconds, " << prevTime.tv_nsec << " NanoSeconds" << std::endl;
+               // std::cout << "[Pinger] time of this pong    :" << nowTime.tv_sec << " Seconds, " << nowTime.tv_nsec << " NanoSeconds" << std::endl;
+               // std::cout << "[Pinger] difference           : " << diff.tv_sec << " Seconds, " << diff.tv_nsec << " NanoSeconds" << std::endl;
+           `;
+        myChoice -> State1 when `return (count<ROUNDS);`
+           `   prevTime = nowTime;
+               count++;
+               log.log("[Pinger] ------");
+               pingPort.ping().send();
+               log.show("[Pinger] ping sent ... \n");
+           `;
+        myChoice -> Done when `else`
+           `   log.log("[Pinger] -----");
+               log.log("[Pinger] time to stop");
+               std::cout << "[Pinger] start time           :"; printReadableFormat(startTime); std::cout << std::endl;
+               std::cout << "[Pinger] time of last pong    :"; printReadableFormat(nowTime); std::cout << std::endl;
+               std::cout << "[Pinger] difference           :"; printDifference(startTime, nowTime);
+           `;
+    };

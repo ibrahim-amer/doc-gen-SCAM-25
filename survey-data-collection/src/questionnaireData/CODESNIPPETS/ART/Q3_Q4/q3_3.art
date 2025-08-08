@@ -1,0 +1,34 @@
+    /** 
+    * State machine for a ponger responding to pings. 
+    *
+    * This state machine manages the behavior of a ponger that responds to ping messages with pong messages. 
+    *
+    * @state Playing State where the ponger is actively waiting for a ping.
+    * @state HitBack State where the ponger responds to a ping with a pong.
+    *
+    * @pseudostate init (initial state): Initial state where the ponger starts up.
+    *
+    * @transition t1[Playing -> HitBack]: Transition to HitBack on receiving a ping.
+    * @transition t2[HitBack -> Playing]: Transition back to Playing on timeout.
+    */
+    
+    statemachine {
+        state Playing, HitBack {
+            entry
+	       `   timerPort.informIn(RTTimespec(0,DELAY));
+               `;
+        };
+	
+        init: initial -> Playing 
+           `   log.log("[Ponger] starting up");
+           `;
+	   
+        t1: Playing -> HitBack on pongPort.ping
+           `   log.log("[Ponger] ping received!");
+           `;
+	   
+        t2: HitBack -> Playing on timerPort.timeout
+           `   pongPort.pong().send();
+               log.log("[Ponger] pong sent ...");          
+           `;
+    };

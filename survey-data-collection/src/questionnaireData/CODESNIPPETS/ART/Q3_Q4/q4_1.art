@@ -1,0 +1,92 @@
+    /** 
+    * State machine for a guessing game with hints. 
+    *
+    * This state machine manages a guessing game where the user guesses a secret number with hints provided. 
+    *
+    * @state WaitForHintRequest State waiting for a hint request from the user.
+    * @state WaitForGuess State waiting for the user to make a guess.
+    * @state Done Final state indicating the guessing game is complete.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    * @pseudostate checkLastGuess (choice state): Decision point based on the last guess.
+    * @pseudostate join (junction state): Connects transitions between states.
+    * @pseudostate checkGuess (choice state): Decision point based on the user guess.
+    *
+    * @transition init[initial -> WaitForHintRequest]: Initialize game and set up secret number.
+    * @transition gotHintReq[WaitForHintRequest -> checkLastGuess]: Transition on hint request to check last guess.
+    * @transition more[checkLastGuess -> join]: Transition if the last guess is less than the secret number.
+    * @transition notMore[checkLastGuess -> join]: Transition if the last guess is more than the secret number.
+    * @transition sendHint[join -> WaitForGuess]: Send hint to user and wait for their guess.
+    * @transition wait[WaitForGuess -> checkGuess]: Transition on receiving a guess from the user.
+    * @transition guessCorrect[checkGuess -> Done]: Transition if the guess is correct.
+    * @transition else[checkGuess -> WaitForHintRequest]: Transition if the guess is incorrect.
+    */
+    
+    statemachine {
+        state WaitForHintRequest;
+        state WaitForGuess;
+        state Done;
+
+        init: initial -> WaitForHintRequest
+           `   Log:out << "starting up" << std::endl;
+
+               // receive max, i.e., upper bound of range that secret number can be in
+               max = * static_cast<const unsigned int*>(rtdata);
+
+               // initialize random seed: //
+               srand(time(NULL));
+               secretNumber = rand() % max;
+               mostRecentGuess = max;
+
+               Log::out << "secret number is " << secretNumber << std::endl;
+               Log::out << "sending 'ready' to Top" << std::endl;
+
+               cmdP.ready().send();
+           `;
+
+        gotHintReq: WaitForHintRequest -> checkLastGuess on numberPort.askHint
+           `   hint.current = mostRecentGuess;
+               hint.min = min;
+               hint.max = max;
+           `;
+	   
+        choice checkLastGuess;
+	
+        more: checkLastGuess -> join when `return (mostRecentGuess < secretNumber);`
+           `   Log::out << "hint given: most recent guess is " << mostRecentGuess << std::endl;
+               Log::out << "secret number is MORE, but no more than " << max << std::endl;
+               hint.isLess = false; 
+           `;
+        notMore: checkLastGuess -> join when `else`
+           `   Log::out << "hint given: most recent guess is " << mostRecentGuess << std::endl;
+               Log::out << "secret number is LESS, but no less than " << min << std::endl;
+               hint.isLess = true;
+           `;
+        sendHint: join -> WaitForGuess
+           `   numberPort.sendHint(hint).send();
+           `;
+
+        junction join;
+
+        choice checkGuess;
+	
+        wait: WaitForGuess -> checkGuess on numberPort.guess
+           `   mostRecentGuess = *rtdata;
+           `;
+	   
+        guessCorrect: checkGuess -> Done when `return (mostRecentGuess == secretNumber);`
+           `   Log::out << "guess correct! secret number is " << secretNumber << std::endl;
+               numberPort.sendAnswer(true).send();
+           `;
+	   
+        else: checkGuess -> WaitForHintRequest when `else`
+           `   Log::out << "guess incorrect; keep going" << std::endl;
+               if (mostRecentGuess > secretNumber) {   // it is less
+                  max = mostRecentGuess;
+               }
+               else {   // it is more
+                  min = mostRecentGuess;
+               }
+               numberPort.sendAnswer(false).send();
+           `;
+    };

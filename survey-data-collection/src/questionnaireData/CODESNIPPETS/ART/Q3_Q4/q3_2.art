@@ -1,0 +1,28 @@
+    /** 
+    * State machine for handling incoming messages and button presses. 
+    *
+    * This state machine manages the state of waiting for a message and handles button pushes to send signals. 
+    *
+    * @state WaitForIncomingMessage State where the system waits for an incoming message and enables the port.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine, registers the button.
+    *
+    * @transition onButtonPush[WaitForIncomingMessage -> WaitForIncomingMessage]: Triggered when the button is pushed, sends pedestrian signal.
+    */
+    
+    statemachine {
+        state WaitForIncomingMessage {
+            entry
+            `   port.enable();
+            `;
+        };
+
+        init: initial -> WaitForIncomingMessage
+           `   MyThread::Instance().registerPushButton(this);
+           `;
+
+        onButtonPush: WaitForIncomingMessage -> WaitForIncomingMessage on port.push
+           `   // The button was pushed
+               trafficLight.pedestrian().send();
+           `;
+    };

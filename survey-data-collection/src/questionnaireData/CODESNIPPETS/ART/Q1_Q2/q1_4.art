@@ -1,0 +1,24 @@
+    /** 
+    * State machine for handling ping events and sending results. 
+    *
+    * This state machine initializes in the initial state and transitions to State1 to handle ping events. 
+    *
+    * @state State1 State where the machine responds to ping events and sends results.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    *
+    * @transition init[initial -> State1]: Transition to State1 from initial state.
+    * @transition ping[State1 -> State1]: Self-transition on receiving a ping event.
+    */
+    
+    statemachine {
+    
+        state State1 {
+
+        init: initial -> State1;
+        State1 -> State1 on p.ping
+	   `   std::cout << "Pinged ! " << std::endl << std::flush;
+                p.result().send();
+           `;
+        };
+    };

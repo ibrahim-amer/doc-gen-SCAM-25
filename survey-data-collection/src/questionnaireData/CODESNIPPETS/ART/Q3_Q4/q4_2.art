@@ -1,0 +1,107 @@
+    /** 
+    * State machine for a philosopher picking up forks and eating. 
+    *
+    * This state machine models the behavior of a philosopher in a dining scenario, managing fork acquisition and eating based on defined strategies. 
+    *
+    * @state Thinking Philosopher is thinking and starts a timer for the next action.
+    * @state Wait4Right Waiting for the right fork after sending a request.
+    * @state Wait4Left Waiting for the left fork after sending a request.
+    * @state Wait4First Randomly waiting for either fork based on strategy.
+    * @state GoLeftWait4Right Acquired left fork, waiting for right fork.
+    * @state GoRightWait4Right Acquired right fork, waiting for left fork.
+    * @state Eating State for eating after acquiring both forks.
+    *
+    * @pseudostate init (initial state): Initial state where philosopher is set up and initialized.
+    * @pseudostate checkStrategy (choice state): Decision point for picking up forks based on strategy.
+    *
+    * @transition gotTimeout[Thinking -> checkStrategy]: Transition on timer timeout to check strategy.
+    * @transition left_first[checkStrategy -> Wait4Left]: Transition to Wait4Left if strategy is LEFTFIRST.
+    * @transition right_first[checkStrategy -> Wait4Right]: Transition to Wait4Right if strategy is RIGHTFIRST.
+    * @transition random[checkStrategy -> Wait4First]: Transition to Wait4First if strategy is RANDOM.
+    * @transition random_else[checkStrategy -> Wait4First]: Default transition to Wait4First if no strategy matches.
+    * @transition gotLeft1[Wait4Left -> GoLeftWait4Right]: Transition to GoLeftWait4Right on left fork acknowledgment.
+    * @transition gotLeft2[Wait4First -> GoLeftWait4Right]: Transition to GoLeftWait4Right on left fork acknowledgment.
+    * @transition gotRight1[Wait4Right -> GoRightWait4Right]: Transition to GoRightWait4Right on right fork acknowledgment.
+    * @transition gotRight2[Wait4First -> GoRightWait4Right]: Transition to GoRightWait4Right on right fork acknowledgment.
+    * @transition gotLeft3[GoRightWait4Right -> Eating]: Transition to Eating on left fork acknowledgment.
+    * @transition gotRight3[GoLeftWait4Right -> Eating]: Transition to Eating on right fork acknowledgment.
+    * @transition putDownForks[Eating -> Thinking]: Transition back to Thinking after eating.
+    */
+    
+    statemachine {
+        state Thinking {
+            entry  
+            `   std::cout  << myName << " thinking" << std::endl;
+                timerPort.informIn(RTTimespec(2,100000000));
+            `;
+        }
+	state Wait4Right, Wait4Left, Wait4First, GoLeftWait4Right, GoRightWait4Right, Eating {
+            entry
+            `   std::cout << "    " << myName  << " eating" << std::endl;
+                int rnd = rand() % 10;
+                timerPort.informIn(RTTimespec(0,rnd*10000000));
+            `;
+        };
+        choice checkStrategy;
+        init: initial -> Thinking
+           `   // read in the initialization arguments
+               PhilArgs pArgs = (PhilArgs) *((PhilArgs*) rtdata);
+
+               id = pArgs.id;
+               numPhils = pArgs.numPhils;
+               pickUpStrat = pArgs.pickUpStrat;
+
+               // my name is 'phil'+id
+               char buffer1[10];
+               snprintf(buffer1, 10, "phil%d", id);            
+               myName = new char[strlen(buffer1) + 1];
+               strcpy(myName, buffer1);
+               std::cout<< myName << " starting up "  << std::endl;
+
+               // initialize random number generator
+               srand(time(NULL));
+           `;
+
+        gotTimeout: Thinking -> checkStrategy on timerPort.timeout;
+        left_first: checkStrategy -> Wait4Left when `return (pickUpStrat==PickUpStrategy::LEFTFIRST);`
+           `   leftPort.up().send();
+           `;
+        right_first: checkStrategy -> Wait4Right when `return (pickUpStrat==PickUpStrategy::RIGHTFIRST);`
+           `   rightPort.up().send();
+           `;
+        random: checkStrategy -> Wait4First when `return (pickUpStrat==PickUpStrategy::RANDOM);`
+           `   int rnd = rand() % 100;
+               if (rnd>50) 
+                  leftPort.up().send();
+               else 
+                  rightPort.up().send();
+           `;
+        random_else: checkStrategy -> Wait4First when `else`;
+	
+        gotLeft1: Wait4Left -> GoLeftWait4Right on leftPort.ack
+           `   std::cout << "    " << myName << " got left " << std::flush << std::endl;
+               rightPort.up().send();
+           `;
+        gotLeft2: Wait4First -> GoLeftWait4Right on leftPort.ack
+           `   std::cout<< "    " << myName << " got left "  << std::flush << std::endl;
+               rightPort.up().send();
+           `;
+        gotRight1: Wait4Right -> GoRightWait4Right on rightPort.ack
+           `   std::cout << "    "<< myName  << " got right " << std::flush << std::endl;
+               leftPort.up().send();
+           `;
+        gotRight2: Wait4First -> GoRightWait4Right on rightPort.ack
+           `   std::cout << "    "<< myName << " got right " << std::flush << std::endl;
+               leftPort.up().send();
+           `;
+        gotLeft3: GoRightWait4Right -> Eating on leftPort.ack
+           `   // std::cout  << myName << " to eating 1 " << std::flush << std::endl;
+           `;
+        gotRight3: GoLeftWait4Right -> Eating on rightPort.ack
+           `   // std::cout << myName << " to eating 2 "  << std::flush << std::endl;
+           `;
+        putDownForks: Eating -> Thinking on timerPort.timeout
+           `   leftPort.down().send();
+               rightPort.down().send();
+           `;
+    };

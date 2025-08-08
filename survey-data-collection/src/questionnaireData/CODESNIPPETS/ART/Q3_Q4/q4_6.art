@@ -1,0 +1,111 @@
+    /** 
+    * State machine for managing connection and guessing with a number capsule. 
+    *
+    * This state machine handles the lifecycle of connecting to a number capsule, sending guesses, and managing state transitions based on responses. 
+    *
+    * @state Disconnected Initial state where the system is not connected to the number capsule.
+    * @state Connecting State for connecting to the number capsule and importing data.
+    * @state Connected State indicating successful connection to the number capsule.
+    * @state AskForHint State where a hint is requested from the number capsule.
+    * @state SendGuess State for sending a guess based on the received hint.
+    * @state Disconnecting State for deporting the number capsule before disconnecting.
+    *
+    * @pseudostate initial (initial state): Starting point where the system initializes and sends readiness.
+    * @pseudostate entryP (entrypoint state): Entry point for the Connected state, transitioning to AskForHint.
+    * @pseudostate exitP (exitpoint state): Exit point for the Connected state, transitioning back to Disconnected.
+    * @pseudostate checkAnswer (choice state): Decision point based on whether the guess was correct or not.
+    *
+    * @transition beenToldToConnect[Disconnected -> Connecting]: Transition triggered to start connecting.
+    * @transition numberImported[Connecting -> Connected.enp]: Transition when number is successfully imported.
+    * @transition AskForHint -> SendGuess[AskForHint -> SendGuess]: Transition triggered by receiving a hint.
+    * @transition SendGuess -> checkAnswer[SendGuess -> checkAnswer]: Transition triggered by sending a guess.
+    * @transition found[checkAnswer -> Disconnecting]: Transition if the guess was correct.
+    * @transition else[checkAnswer -> Disconnecting]: Transition if the guess was incorrect.
+    * @transition numberDeported[Disconnecting -> exitP]: Transition when number is deported and unbound.
+    * @transition exitP -> Disconnected[Connected.exitP -> Disconnected]: Transition back to Disconnected state.
+    */
+    
+    statemachine {
+        state Disconnected;
+	
+        state Connecting {
+            entry
+            `   log("importing 'number'");
+
+                if (numberId.isValid()) {
+                    if (!framePort.import(numberId, number, 0)) {
+                        log("problem importing the number capsule");
+                    }
+                }
+            `;      
+        };
+        
+        initial -> Disconnected 
+           `   // what's my pid, i.e., which number of guesser am I?
+               myId = this->getIndex();
+
+               // my name is <capsule part name>+<pid>
+               char buffer[10];
+               snprintf(buffer, 10, "%s%d", this->getName(), myId);
+               strcpy(myName, buffer);
+               log("starting up");
+
+               log("sending 'ready' to Top");
+               guesserPort.ready().send();  
+           `;
+
+        beenToldToConnect: Disconnected -> Connecting on guesserPort.doConnect
+           `   log("getting ready to connect");
+               numberId = *rtdata;
+           `;
+	   
+        numberImported: Connecting -> Connected.enp on numberPort.rtBound
+           `   log("connected!");
+           `;
+
+        state Connected {
+            entrypoint entryP;
+            exitpoint exitP;
+            state AskForHint {
+                entry
+                `   log("asking for hint");
+                    numberPort.askHint().send();
+                `;  
+            };
+            state SendGuess {
+                entry
+                `   if (hint.isLess) {
+                        guess = hint.current - (hint.current - hint.min) / 2;
+                    }
+                    else {
+                        guess = hint.current + (hint.max - hint.current) / 2;
+                    }
+                    Log::out << "[" << myName << "] guessing: " << guess << std::endl;
+                    numberPort.guess(guess).send();
+                `;
+            };
+            state Disconnecting {
+                entry
+                `   if (!framePort.deport(numberId, number)) {
+                        log("problem deporting 'number'");
+                    }                
+                `;
+            };
+            entryP -> AskForHint;
+            AskForHint -> SendGuess on numberPort.sendHint
+               `   hint = *rtdata;                
+               `;
+            choice checkAnswer;
+            SendGuess -> checkAnswer on numberPort.sendAnswer;
+            found: checkAnswer -> Disconnecting when `*rtdata`
+               `   guesserPort.found(guess).send();
+               `;
+            else: checkAnswer -> Disconnecting when `else`
+               `   guesserPort.notFound().send();
+               `;
+            numberDeported: Disconnecting -> exitP on numberPort.rtUnbound
+               `   log("disconnected!");
+               `;
+        };
+        numberDeported: Connected.exitP -> Disconnected;
+    };

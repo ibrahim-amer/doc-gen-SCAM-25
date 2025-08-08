@@ -1,0 +1,5 @@
+#@@ Starts a PostgreSQL database using Docker Compose.
+#@ The "setup-db" command is used to launch a PostgreSQL database in detached mode using Docker Compose.
+setup-db: 
+	@\
+	docker-compose up --detach postgres

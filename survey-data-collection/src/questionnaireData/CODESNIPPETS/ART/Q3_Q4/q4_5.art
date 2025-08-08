@@ -1,0 +1,57 @@
+    /** 
+    * State machine for handling compute requests and managing increments. 
+    *
+    * This state machine manages the process of receiving compute requests and performing calculations, transitioning between states based on the results of those computations. 
+    *
+    * @state Idle State where the system is waiting for a compute request.
+    * @state Computing State where the system performs computations and waits for increments.
+    * @state WaitForIncrement Sub-state of Computing, waiting for an increment to be computed.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine.
+    * @pseudostate exit1 (exitpoint state): Exit point for the Computing state to transition out.
+    * @pseudostate more_increments (choice state): Decision point to check if more increments are needed.
+    *
+    * @transition init[initial -> Idle]: Initial transition to Idle state.
+    * @transition request_received[Idle -> Computing]: Transition triggered by a compute request.
+    * @transition increment_computed[Computing.exit1 -> more_increments]: Transition after increment computation.
+    * @transition done[more_increments -> Idle]: Transition to Idle if computation is complete.
+    * @transition compute_next_increment[more_increments -> Computing]: Transition to continue computing increments.
+    */
+    
+    statemachine {
+        state Idle;
+	
+        state Computing {
+            exitpoint exit1;
+            state WaitForIncrement;
+            initial -> WaitForIncrement;
+            increment_computed: WaitForIncrement -> exit1 on mulPort.returnIncrement;
+        };
+	
+        choice more_increments;
+	
+        init: initial -> Idle;
+	
+        request_received: Idle -> Computing on requestPort.compute
+           `   remainingIterations = *rtdata - 1;
+               mulPort.getIncrement(remainingIterations).send();
+           `;
+
+        increment_computed: Computing.exit1 -> more_increments
+           `   double inc = *rtdata;
+               printDouble(inc, remainingIterations);
+               result += *rtdata;
+           `;
+	   
+        done: more_increments -> Idle when `return (remainingIterations == 0 ? RTTrue : RTFalse);`
+           `   // Computation completed
+               result = sqrt(12) * result;
+               requestPort.result(result).send();
+           `;
+	   
+        compute_next_increment: more_increments -> Computing when `else`
+           `   // Computation not completed
+	       remainingIterations--;
+               mulPort.getIncrement(remainingIterations).send();
+           `;      
+    };

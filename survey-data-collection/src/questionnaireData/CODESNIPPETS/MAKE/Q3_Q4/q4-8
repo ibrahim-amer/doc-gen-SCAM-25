@@ -1,0 +1,17 @@
+#@@ Remove all project-related files and directories
+#@ This target removes all project-related files and directories, including source files, binaries, and documentation. It also displays a message and lists the content in the project folder.
+clear-project:
+	$(Q)rm -f ".symlink-info"
+	$(Q)rm -f "Cargo.toml"
+	$(Q)rm -f "Cargo.lock"
+	$(Q)rm -f ".travis.yml"
+	$(Q)rm -f "rusti.sh"
+	$(Q)rm -f "watch.sh"
+	$(Q)rm -rf "target/"
+	$(Q)rm -rf "src/"
+	$(Q)rm -rf "$(EXE_DIR)/"
+	$(Q)rm -rf "examples/"
+	$(Q)rm -rf "doc/"
+	$(Q)echo "--- Removed all source files, binaries and documentation" \
+	&& echo "--- Content in project folder" \
+	&& ls -a

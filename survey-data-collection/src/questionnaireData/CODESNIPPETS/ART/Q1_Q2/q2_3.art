@@ -1,0 +1,23 @@
+    /** 
+    * State machine for initializing a web server. 
+    *
+    * This state machine initializes a web server by parsing command line arguments and setting up the server. 
+    *
+    * @state State Main operational state where the server is initialized and commands are processed.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine, initializes the server.
+    *
+    * @transition init[initial -> State]: Transition from initial to State, initializing the server.
+    */
+    
+    statemachine {
+        state State;
+	
+        init: initial -> State
+           `   parseCommandLine();
+               RTActorId id = frame.incarnateCustom(server, 
+                                          RTActorFactory([this](RTController * c, RTActorRef * a, int index) {
+                                              return new WebServer(ServerThread, a, port, remotePort, remoteHost);
+                                          }));
+           `;
+    };

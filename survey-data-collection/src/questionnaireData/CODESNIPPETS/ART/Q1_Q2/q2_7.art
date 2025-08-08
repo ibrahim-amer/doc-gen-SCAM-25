@@ -1,0 +1,27 @@
+    /** 
+    * State machine for logging messages. 
+    *
+    * This state machine initializes a logger and handles logging messages in State1. 
+    *
+    * @state State1 State where logging is initialized and ready to log messages.
+    *
+    * @pseudostate initial (initial state): Starting point of the state machine, transitions to State1.
+    *
+    * @transition init[initial -> State1]: Transition to State1 when initialized.
+    * @transition log[State1 -> State1]: Self-transition on receiving log message.
+    */
+    
+    statemachine {
+        state State1 {
+            entry
+            `   log.log("Logger ready to log messages");
+                log.commit();
+            `;
+	}
+        init: initial -> State1;
+        log: State1 -> State1 on port.logMsg
+           `   log.log(rtdata, &RTType_RTString);
+               log.commit();
+           `;
+        };
+    };

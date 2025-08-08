@@ -1,0 +1,6 @@
+#@@ Compiles and installs the vendored gocovmerge tool.
+#@ This target compiles and installs the vendored gocovmerge tool if it is not found in the vendor directory. It also checks for the presence of the vendored gocovmerge and prompts to run "make setup" if not found.
+bin/gocovmerge: .GOPATH/.ok
+	@test -d ./vendor/github.com/wadey/gocovmerge || \
+	    { echo "Vendored gocovmerge not found, try running 'make setup'..."; exit 1; }
+	$Q go install $(IMPORT_PATH)/vendor/github.com/wadey/gocovmerge

@@ -1,0 +1,5 @@
+#@@ Format Go source code and import packages using goimports.
+#@ This command formats the Go source code in the specified directory and imports packages using goimports. It finds all .go files in the specified directory, excluding the ignored packages, and then formats and imports the packages using goimports.
+format: bin/goimports .GOPATH/.ok
+	$Q find .GOPATH/src/$(IMPORT_PATH)/ -iname \*.go | grep -v \
+	    -e "^$$" $(addprefix -e ,$(IGNORED_PACKAGES)) | xargs ./bin/goimports -w

@@ -1,0 +1,7 @@
+#@@ Prints usage information and available targets for the Makefile.
+#@ This target displays the usage information for the Makefile and lists available targets with their descriptions.
+help: 
+	@echo 'usage: make [target]'
+	@echo
+	@echo 'targets:'
+	@grep -E '^[8+a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

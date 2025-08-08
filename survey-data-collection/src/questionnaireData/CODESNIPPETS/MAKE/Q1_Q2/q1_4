@@ -1,0 +1,4 @@
+#@@ Clean and build the project with dependencies.
+#@ The "build" target in the makefile is used to clean any existing build artifacts and then build the project with its dependencies. The $(info) function is used to print a message indicating that the project is being built.
+build: clean deps   
+	$(info Building the project)

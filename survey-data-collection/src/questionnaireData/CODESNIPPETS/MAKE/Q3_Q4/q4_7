@@ -1,0 +1,23 @@
+#@@ Generate and modify a property list file for iOS app distribution.
+#@ This code uses PLIST_BUDDY to create and update a property list file for an iOS app distribution. It adds items, assets, and metadata to the plist file, setting values such as URL, kind, title, version, and bundle identifier.
+plist:
+	@rm -rf $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items array" $(PLIST_FILE) $2>/dev/null
+	@$(PLIST_BUDDY) -c "Add :items:0 dict" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets array" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:0 dict" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:0:url string \"$(IPA_URL)\"" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:0:kind string software-package" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:1 dict" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:1:kind string display-image" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:1:needs-shine bool NO" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:1:url string \"$(BASE_URL)/icon.png\"" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:2 dict" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:2:kind string full-size-image" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:2:needs-shine bool NO" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:assets:2:url string \"$(BASE_URL)/icon.png\"" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:metadata dict" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:metadata:title string \"$(app_title)\"" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:metadata:kind string software" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:metadata:bundle-version string \"$(app_build_version)\"" $(PLIST_FILE)
+	@$(PLIST_BUDDY) -c "Add :items:0:metadata:bundle-identifier string \"`$(PLIST_BUDDY) -c 'Print :CFBundleIdentifier' '$(INFO_FILE)'`\"" $(PLIST_FILE)

@@ -1,0 +1,9 @@
+    /* 
+    * Empty State Machine 
+    *
+    * This state machine does not contain any states, transitions, or pseudostates. It serves as a starting point for building a new state machine model. 
+    */
+    
+    statemachine {
+
+    };

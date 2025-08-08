@@ -1,0 +1,26 @@
+{
+    "introHtmlPath": "intros/cpp/intro.html",
+    "languageExperienceField": "C++",
+    "questions": [
+      {
+        "type": "metrics",
+        "questionId": "",
+        "question": "Evaluate the header comment preceding the function definition below: ",
+        "codeSnippetPath": "CODESNIPPETS/CPP/Q1_Q2/",
+        "language": "cpp"
+      },
+      {
+        "type": "metrics",
+        "questionId": "",
+        "question": "Evaluate the header comment preceding the function definition below: ",
+        "codeSnippetPath": "CODESNIPPETS/CPP/Q3_Q4/",
+        "language": "cpp"
+      },
+      {
+        "type": "text",
+        "questionId": "FeedbackQuestion",
+        "question": "Leave any feedback if you want to.",
+        "required": false
+      }
+    ]
+  }

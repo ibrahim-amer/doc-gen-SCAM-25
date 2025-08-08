@@ -1,0 +1,22 @@
+    /** 
+    * State machine for handling ping-pong communication. 
+    *
+    * This state machine initializes and waits for ping messages, responding with pong messages. 
+    *
+    * @state State1 State where the machine waits for a ping message and responds with a pong.
+    *
+    * @pseudostate init (initial state): Initial state that transitions to State1.
+    *
+    * @transition gotPing[State1 -> State1]: Transition on receiving a ping message; sends a pong response.
+    */
+    
+    statemachine {
+        state State1;
+	
+        init: initial -> State1;
+	gotPing: State1 -> State1 on pongPort.ping
+           `   int i = *((int*) rtdata);
+               std::cout << getName() << " sends pong (count=" << i << ")" << std::endl;
+               pongPort.pong().send();
+           `;
+    };

@@ -1,0 +1,9 @@
+#@@ Sets up directory structure and symbolic links for Go project.
+#@ This code creates necessary directories and symbolic links for a Go project. It sets up the directory structure, creates symbolic links, and touches a file to indicate completion.
+.GOPATH/.ok:
+	$Q mkdir -p "$(dir .GOPATH/src/$(IMPORT_PATH))"
+	$Q ln -s ../../../.. ".GOPATH/src/$(IMPORT_PATH)"
+	$Q mkdir -p .GOPATH/test .GOPATH/cover
+	$Q mkdir -p bin
+	$Q ln -s ../bin .GOPATH/bin
+	$Q touch $@

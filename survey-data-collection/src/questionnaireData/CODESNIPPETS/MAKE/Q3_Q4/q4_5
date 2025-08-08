@@ -1,0 +1,16 @@
+#@@ Uploads app and dSYM files to TestFlight for distribution and installation.
+#@ This code uploads the $(APP).app and $(APP).app.dSYM.zip files to TestFlight using curl command. It includes the API token, team token, release notes, and notification settings. After the upload, it retrieves the installation URL from the result log.
+testflight: zip_dsym
+	@echo "${INFO_CLR}>> Uploading ${RESET_CLR}${RESULT_CLR}$(APP).app.dSYM.zip...${RESET_CLR}" ;
+	@curl http://testflightapp.com/api/builds.json \
+		-F file=@"$(IPA_FILE)" \
+		-F dsym=@"$(BUILD_PATH)/$(APP).app.dSYM.zip" \
+		-F api_token="$(TESTFLIGHT_API_TOKEN)" \
+		-F team_token="$(TESTFLIGHT_TEAM_TOKEN)" \
+		-F notes="$(subst '\\r','%A0',$(GIT_LOG))" \
+		-F notify=True \
+		-o $(BUILD_PATH)/testflight_upload_result.log 2>&1
+	@echo "${RESULT_CLR}** UPLOAD SUCCEEDED **\n>> INSTALL URL: "
+	@cat $(BUILD_PATH)/testflight_upload_result.log \
+		| grep -o 'https*://[^\"]*testflightapp.com/install/[^\"]*' \
+		| cat && printf "${RESET_CLR}"

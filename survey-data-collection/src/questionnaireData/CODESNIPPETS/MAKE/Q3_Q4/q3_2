@@ -1,0 +1,11 @@
+#@@ Builds a Docker image with specified arguments and tags it with version and latest if conditions are met.
+#@ This code snippet defines a Docker build command that builds an image using the specified build arguments and tags it with the version. If certain conditions are met, it also tags the image as "latest" and removes the previous "latest" image if necessary.
+docker-build: .release
+	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) -f $(DOCKER_FILE_PATH)
+	@if [[ $(TAG_WITH_LATEST) != never ]] && ([[ $(TAG_WITH_LATEST) == always ]] || [[ $(BASE_RELEASE) == $(VERSION) ]]); then \
+		echo docker tag $(IMAGE):$(VERSION) $(IMAGE):latest >&2; \
+		docker tag $(IMAGE):$(VERSION) $(IMAGE):latest; \
+	else \
+		echo docker rmi --force --no-prune $(IMAGE):latest >&2; \
+		docker rmi --force --no-prune $(IMAGE):latest 2>/dev/null; \
+	fi

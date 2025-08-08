@@ -1,0 +1,12 @@
+#@@ Sends an email using the Mailgun API with specified parameters.
+#@ This function uses the curl command to send an email via the Mailgun API by providing the necessary authentication, recipient, subject, text, and HTML content. After sending the email, it displays a confirmation message.
+send_email:
+	@echo "${INFO_CLR}>> SENDING EMAILS...${RESTORE_CLR}"
+	@curl -s --user api:$(MAILGUN_API_KEY) \
+		https://api.mailgun.net/v2/$(EMAIL_DOMAIN)/messages \
+		-F from='$(APP) <postmaster@$(EMAIL_DOMAIN)>' \
+		-F to=$(EMAIL_LIST)\
+		-F subject="$(app_title) is ready" \
+		-F text='$(app_title) $(BASE_URL)' \
+		-F "html=<$(UPLOAD_PATH)/index.html"
+	@echo "${RESULT_CLR}** EMAILS SENT **${RESET_CLR}"

@@ -1,0 +1,11 @@
+#@@ Run a Docker container for building project code.
+#@ This command runs a Docker container with the specified platform and work directory, mounts the current directory inside the container, and starts an interactive bash shell. It is used for building project code within a controlled environment.
+builder-run :
+	docker run \
+		--rm \
+		-it \
+		--platform linux/amd64 \
+		--workdir /builder/mnt \
+		-v ${PWD}:/builder/mnt \
+		$(project_name)-builder:latest \
+		/bin/bash

@@ -1,0 +1,28 @@
+   /** 
+    * State machine for a timed greeting. 
+    *
+    * This state machine initializes a timer and transitions to print a message when the timer expires. 
+    *
+    * @state S1 State where a timer is set to trigger after 2 seconds.
+    * @state S2 State reached when the timer expires, prints a message and aborts.
+    *
+    * @pseudostate init (initial state): Initial state that sets up the timer.
+    *
+    * @transition timeIsUp[S1 -> S2]: Transition triggered when the timer expires.
+    */
+    
+    statemachine {
+        state S1, S2;
+	
+        init: initial -> S1
+           `   RTTimerId tid = timer.informIn(RTTimespec(2, 0));
+               if (!tid.isValid()) {
+                  std::cout << "Couldn't set timer, sorry!" << std::endl;
+               }
+           `;
+	   
+        timeIsUp: S1 -> S2 on timer.timeout
+           `     std::cout << "Hello World!" << std::endl;
+                 context()->abort();
+           `;
+    };
