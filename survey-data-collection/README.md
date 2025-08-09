@@ -1,5 +1,5 @@
 
-# 📊 Multilingual Docstring Evaluation Survey Platform
+# 📊 Docstring Evaluation Survey Platform
 
 This is a Dockerized survey web application for collecting structured human feedback on **AI-generated docstrings** across multiple programming languages. The platform supports research efforts to evaluate how well automatically generated documentation explains source code functionality.
 
@@ -18,10 +18,10 @@ This platform enables researchers to:
 
 ## 🧪 Languages Supported
 
-- 🐍 Python
-- 🛠️ Make
-- 💻 C++
-- 🎨 Art / creative samples
+- Python
+- Make
+- C++
+- Art / creative samples
 - ➕ Easily extendable to more languages
 
 ---
