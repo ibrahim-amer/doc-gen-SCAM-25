@@ -103,9 +103,8 @@ To cite this work please use this Bibtex entry
   author       = {Nathanael Yao and Juergen Dingel and Ali Tizghadam and Ibrahim M. Amer},
   title        = {Language-Agnostic Generation of Header Comments using Large Language Models},
   year         = {2025},
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.xxxxxxx},
-  url          = {https://doi.org/10.5281/zenodo.xxxxxxx}
+  doi          = {10.5281/zenodo.16786535},
+  url          = {https://doi.org/10.5281/zenodo.16786535}
 }
 ```
 ---
