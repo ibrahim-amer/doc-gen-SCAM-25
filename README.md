@@ -1,5 +1,4 @@
 # 📚 Docstring Generation & Evaluation Platform
-
 [![DOI](https://zenodo.org/badge/1034191475.svg)](https://doi.org/10.5281/zenodo.16786535)
 
 This repository contains a complete pipeline for **automatic documentation generation** and **human evaluation** across multiple programming languages.
