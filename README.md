@@ -21,6 +21,7 @@ Together, they form an end-to-end research framework for studying and improving 
   - [🛠️ Documentation Generation Tool](#️-documentation-generation-tool)
   - [🖥️ Tech Stack](#️-tech-stack)
   - [📜 License](#-license)
+  - [Citation](#citation)
 
 ---
 
@@ -93,4 +94,17 @@ The workflow typically involves:
 
 This project is licensed under the **MIT License**.
 
+---
+## Citation
+To cite this work please use this Bibtex entry
+```
+@misc{your_repo_name_2025,
+  author       = {Nathanael Yao and Juergen Dingel and Ali Tizghadam and Ibrahim M. Amer},
+  title        = {Language-Agnostic Generation of Header Comments using Large Language Models},
+  year         = {2025},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.xxxxxxx},
+  url          = {https://doi.org/10.5281/zenodo.xxxxxxx}
+}
+```
 ---

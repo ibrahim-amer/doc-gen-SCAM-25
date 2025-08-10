@@ -1,7 +1,9 @@
 
 # 📊 Docstring Evaluation Survey Platform
 
-This is a Dockerized survey web application for collecting structured human feedback on **AI-generated docstrings** across multiple programming languages. The platform supports research efforts to evaluate how well automatically generated documentation explains source code functionality.
+This is a Dockerized survey web application for collecting structured human feedback on **AI-generated docstrings** across multiple programming languages. The platform supports research efforts to evaluate how well automatically generated documentation explains source code functionality. 
+
+The collected human responses can be accessed directly @ [/collected-data-db/submissions.json](collected-data-db/submissions.json) 
 
 ---
 
@@ -108,6 +110,8 @@ survey-data-collection/
 │   ├── hooks/, lib/, ai/   # Utility logic and data fetching
 │   └── types.ts            # Shared TypeScript definitions
 ├── public/                 # Static assets
+├── collected-data-db/
+│   └── submissions.json    # Currently collected responses DB
 ├── nginx/                  # Nginx configuration
 ├── Dockerfile              # App container definition
 ├── docker-compose.yml      # Service composition (app, DB, express, tunnel)

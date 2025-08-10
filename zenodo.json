@@ -1,0 +1,37 @@
+{
+  "title": "Language-Agnostic Generation of Header Comments using Large Language Models",
+  "upload_type": "software",
+  "description": "Artifact repository for the ICSME 2025 paper 'Language-Agnostic Generation of Header Comments using Large Language Models'. This repository contains the source code, survey application, documentation, and generated docstring evaluation data for the study described in the paper.",
+  "creators": [
+    {
+      "name": "Yao, Nathanael",
+      "affiliation": "School of Computing, Queen's University, Kingston, Ontario, Canada",
+      "orcid": ""
+    },
+    {
+      "name": "Dingel, Juergen",
+      "affiliation": "School of Computing, Queen's University, Kingston, Ontario, Canada",
+      "orcid": ""
+    },
+    {
+      "name": "Tizghadam, Ali",
+      "affiliation": "Dept. of Chief Technology Office, TELUS Communications Inc, Toronto, Ontario, Canada",
+      "orcid": ""
+    },
+    {
+      "name": "Amer, Ibrahim M.",
+      "affiliation": "School of Computing, Queen's University, Kingston, Ontario, Canada",
+      "orcid": ""
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "ICSME 2025",
+    "Open Research Object",
+    "Large Language Models",
+    "Docstring Generation",
+    "Software Engineering",
+    "Survey"
+  ]
+}
