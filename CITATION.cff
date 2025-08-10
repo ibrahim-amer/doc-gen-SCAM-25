@@ -16,6 +16,9 @@ authors:
     affiliation: "School of Computing, Queen's University, Kingston, Ontario, Canada"
 abstract: "Artifact repository for the ICSME 2025 paper 'Language-Agnostic Generation of Header Comments using Large Language Models'. This repository contains the source code, survey application, documentation, and generated docstring evaluation data for the study."
 license: MIT
-doi: "10.5281/zenodo.xxxxxxx"
+doi: "10.5281/zenodo.16786535"
 version: "1.0.0"
 date-released: 2025-01-01
+
+
+
